@@ -8,6 +8,9 @@ import java.io.*;
  * @author Marco Ferreira 56886
  */
 public class Project {
+    
+    public static int _hashRPrime1 = 19;
+    public static int _hashRPrime2 = 10000019;
 
     /**
      * @param args the command line arguments
@@ -15,9 +18,9 @@ public class Project {
     public static void main(String[] args) {
         // TODO code application logic here
         try (
-                BufferedReader inReader = new BufferedReader(new FileReader(args[1]));
-                BufferedReader br = new BufferedReader(new FileReader(args[0]));
-                BufferedWriter out = new BufferedWriter(new FileWriter("out.txt"));) {
+            BufferedReader inReader = new BufferedReader(new FileReader(args[1]));
+            BufferedReader br = new BufferedReader(new FileReader(args[0]));
+            BufferedWriter out = new BufferedWriter(new FileWriter("out.txt"));) {
             String input;
             String[] options;
             while ((input = inReader.readLine()) != null) {
@@ -36,10 +39,9 @@ public class Project {
                                     out.newLine();
                                 }
                             }
-                            br.close();
                         } catch (Exception e) {
                             System.err.println("Error: " + e.getMessage());
-                        }
+                        }                        
                         break;
                     }
                     case "R": { // TODO : Mudar para Rabin-Karp
@@ -50,9 +52,7 @@ public class Project {
                             while ((protLine = br.readLine()) != null) {
                                 ref = protLine.substring(0, 14);
                                 sequence = processSequence(br);
-                                if (naiveMatcher(sequence, options[1])) {
-                                    System.out.println(ref);
-                                }
+                                hashR(options[1], _hashRPrime1, _hashRPrime2);
                             }
                             br.close();
                         } catch (Exception e) {
@@ -119,6 +119,9 @@ public class Project {
             h *= b;
             h += (int)p[i];
             h %= M;
+            System.out.println(p[i]);
+            System.out.println((int)p[i]);
+            System.out.println(h);
         }
         return h;
     }
