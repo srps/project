@@ -15,10 +15,9 @@ public class Project {
     public static void main(String[] args) {
         // TODO code application logic here
         try (
-            BufferedReader inReader = new BufferedReader(new FileReader(args[1]));
-            BufferedReader br = new BufferedReader(new FileReader(args[0]));
-            BufferedWriter out = new BufferedWriter(new FileWriter("out.txt"));            
-        )   {            
+                BufferedReader inReader = new BufferedReader(new FileReader(args[1]));
+                BufferedReader br = new BufferedReader(new FileReader(args[0]));
+                BufferedWriter out = new BufferedWriter(new FileWriter("out.txt"));) {
             String input;
             String[] options;
             while ((input = inReader.readLine()) != null) {
@@ -28,7 +27,7 @@ public class Project {
                         String protLine;
                         String sequence;
                         String ref;
-                        try {                            
+                        try {
                             while ((protLine = br.readLine()) != null) {
                                 ref = protLine.substring(0, 14);
                                 sequence = processSequence(br);
@@ -92,7 +91,6 @@ public class Project {
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }
-
         return false;
     }
 
@@ -111,11 +109,17 @@ public class Project {
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }
-
         return "";
     }
 
-    private static int hashR(String P) {
-        return 0;
+    private static int hashR(String P, int b, int M) {
+        int h = 0;
+        char[] p = P.toCharArray();
+        for (int i = 0 ; i < P.length() ; i++) {
+            h *= b;
+            h += (int)p[i];
+            h %= M;
+        }
+        return h;
     }
 }
