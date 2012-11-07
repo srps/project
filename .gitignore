@@ -161,3 +161,19 @@ pip-log.txt
 
 # Mac crap
 .DS_Store
+
+#############
+## Idea
+#############
+
+.idea*
+*.iml
+
+#############
+## NetBeans
+#############
+
+nbproject*
+*.class
+build.xml
+manifest.mf
