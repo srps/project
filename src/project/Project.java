@@ -1,7 +1,6 @@
 package project;
 
 import java.io.*;
-import java.nio.file.Files;
 
 /**
  *
@@ -15,11 +14,11 @@ public class Project {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        try {
-            FileReader fis;
-            BufferedReader inReader = new BufferedReader(new FileReader(args[1]));            
-            BufferedReader br;
-            PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("out.txt")));
+        try (
+            BufferedReader inReader = new BufferedReader(new FileReader(args[1]));
+            BufferedReader br = new BufferedReader(new FileReader(args[0]));
+            BufferedWriter out = new BufferedWriter(new FileWriter("out.txt"));            
+        )   {            
             String input;
             String[] options;
             while ((input = inReader.readLine()) != null) {
@@ -29,14 +28,13 @@ public class Project {
                         String protLine;
                         String sequence;
                         String ref;
-                        try {
-                            fis = new FileReader(args[0]);
-                            br = new BufferedReader(fis);
+                        try {                            
                             while ((protLine = br.readLine()) != null) {
                                 ref = protLine.substring(0, 14);
                                 sequence = processSequence(br);
                                 if (naiveMatcher(sequence, options[1])) {
-                                    out.println(ref);
+                                    out.write(ref);
+                                    out.newLine();
                                 }
                             }
                             br.close();
@@ -50,8 +48,6 @@ public class Project {
                         String sequence;
                         String ref;
                         try {
-                            fis = new FileReader(args[0]);
-                            br = new BufferedReader(fis);
                             while ((protLine = br.readLine()) != null) {
                                 ref = protLine.substring(0, 14);
                                 sequence = processSequence(br);
@@ -75,7 +71,6 @@ public class Project {
                     }
 
                     default: {
-                        out.close();
                         return;
                     }
                 }
@@ -103,16 +98,16 @@ public class Project {
 
     private static String processSequence(BufferedReader br) {
         try {
-            String resSequence = "";
+            StringBuilder resSequence = new StringBuilder();
             String seqLine;
             while (!"".equals(seqLine = br.readLine())) {
                 if (seqLine != null) {
-                    resSequence += seqLine;
+                    resSequence.append(seqLine);
                 } else {
-                    return resSequence;
+                    return resSequence.toString();
                 }
             }
-            return resSequence;
+            return resSequence.toString();
         } catch (Exception e) {
             System.err.println("Error: " + e.getMessage());
         }
