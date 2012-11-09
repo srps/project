@@ -1,16 +1,13 @@
-package project;
-
 import java.io.*;
 
 /**
- *
  * @author Sergio Silva 55457
  * @author Marco Ferreira 56886
  */
 public class Project {
-    
-    public static int _hashRPrime1 = 19;
-    public static int _hashRPrime2 = 10000019;
+
+    public static long _hashRPrime1 = Character.MAX_VALUE + 1;
+    public static long _hashRPrime2 = 96293;
 
     /**
      * @param args the command line arguments
@@ -18,9 +15,9 @@ public class Project {
     public static void main(String[] args) {
         // TODO code application logic here
         try (
-            BufferedReader inReader = new BufferedReader(new FileReader(args[1]));
-            BufferedReader br = new BufferedReader(new FileReader(args[0]));
-            BufferedWriter out = new BufferedWriter(new FileWriter("out.txt"));) {
+                BufferedReader inReader = new BufferedReader(new FileReader(args[1]));
+                BufferedReader br = new BufferedReader(new FileReader(args[0]));
+                BufferedWriter out = new BufferedWriter(new FileWriter("out.txt"))) {
             String input;
             String[] options;
             while ((input = inReader.readLine()) != null) {
@@ -36,15 +33,14 @@ public class Project {
                                 sequence = processSequence(br);
                                 if (naiveMatcher(sequence, options[1])) {
                                     out.write(ref);
-                                    out.newLine();
                                 }
                             }
                         } catch (Exception e) {
                             System.err.println("Error: " + e.getMessage());
-                        }                        
+                        }
                         break;
                     }
-                    case "R": { // TODO : Mudar para Rabin-Karp
+                    case "R": {
                         String protLine;
                         String sequence;
                         String ref;
@@ -52,7 +48,9 @@ public class Project {
                             while ((protLine = br.readLine()) != null) {
                                 ref = protLine.substring(0, 14);
                                 sequence = processSequence(br);
-                                hashR(options[1], _hashRPrime1, _hashRPrime2);
+                                if (rabinKarpMatcher(sequence, options[1])) {
+                                    out.write(ref);
+                                }
                             }
                             br.close();
                         } catch (Exception e) {
@@ -94,6 +92,35 @@ public class Project {
         return false;
     }
 
+    private static boolean rabinKarpMatcher(String T, String P) {
+        try {
+            int n = T.length();
+            int m = P.length();
+            long patternHash = hashR(P, _hashRPrime1, _hashRPrime2);
+            long textHash = hashR(new String(T.substring(0, m)), _hashRPrime1, _hashRPrime2);
+            char [] textArray = T.toCharArray();
+            long bmModM = preCompute(_hashRPrime1, m);
+            for (int i = 0; i < n - m; i++) {
+                if (textHash  == patternHash) {
+                    System.out.println("pattern encontrado");
+                    //if (new String(T.substring(i, i + m)).equalsIgnoreCase(P)) {
+                        return true;
+                    //}
+                }
+                textHash -= textArray[i] * bmModM;
+                while (textHash < 0) {
+                    textHash += _hashRPrime2;
+                }
+                textHash = (textHash * _hashRPrime1 + (textArray[i + m])) % _hashRPrime2;
+
+            }
+            return false;
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+        return false;
+    }
+
     private static String processSequence(BufferedReader br) {
         try {
             StringBuilder resSequence = new StringBuilder();
@@ -112,17 +139,49 @@ public class Project {
         return "";
     }
 
-    private static int hashR(String P, int b, int M) {
-        int h = 0;
+    private static long hashR(String P, long b, long M) {
+        long h = 0;
         char[] p = P.toCharArray();
-        for (int i = 0 ; i < P.length() ; i++) {
+        for (int i = 0; i < P.length(); i++) {
             h *= b;
-            h += (int)p[i];
+            h += (int) p[i];
             h %= M;
-            System.out.println(p[i]);
-            System.out.println((int)p[i]);
-            System.out.println(h);
         }
         return h;
     }
+
+    public static void Erathosthenes(int N) {
+
+        boolean[] isPrime = new boolean[N + 1];
+        for (int i = 2; i <= N; i++)
+            isPrime[i] = true;
+
+        for (int i = 2; i * i <= N; i++) {
+            if (isPrime[i]) {
+                for (int j = i; i * j <= N; j++)
+                    isPrime[i * j] = false;
+            }
+        }
+
+        int primes = 0;
+        for (int i = 2; i <= N; i++) {
+            if (isPrime[i])
+                System.out.println(" " + i);
+        }
+    }
+
+    public static long preCompute(long b, int m) {
+        if (m == 1) {
+            return 1;
+        }
+        if (m == 2) {
+            return b;
+        }
+        long ret = 1;
+        for (int i = 1 ; i < m ; i++) {
+            ret *= b;
+        }
+        return ret;
+    }
+
 }
