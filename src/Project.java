@@ -6,8 +6,8 @@ import java.io.*;
  */
 public class Project {
 
-    public static long _hashRPrime1 = Character.MAX_VALUE + 1;
-    public static long _hashRPrime2 = 96293;
+    private static long _hashRPrime1 = Character.MAX_VALUE + 1;
+    private static long _hashRPrime2 = 96293;
 
     /**
      * @param args the command line arguments
@@ -97,7 +97,7 @@ public class Project {
             int n = T.length();
             int m = P.length();
             long patternHash = hashR(P, _hashRPrime1, _hashRPrime2);
-            long textHash = hashR(new String(T.substring(0, m)), _hashRPrime1, _hashRPrime2);
+            long textHash = hashR(T.substring(0, m), _hashRPrime1, _hashRPrime2);
             char [] textArray = T.toCharArray();
             long bmModM = preCompute(_hashRPrime1, m);
             for (int i = 0; i < n - m; i++) {
@@ -170,7 +170,7 @@ public class Project {
         }
     }
 
-    public static long preCompute(long b, int m) {
+    private static long preCompute(long b, int m) {
         if (m == 1) {
             return 1;
         }
